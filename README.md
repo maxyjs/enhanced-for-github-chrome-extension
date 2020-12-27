@@ -1,0 +1,1 @@
+# Chrome extension for finding code on github.com

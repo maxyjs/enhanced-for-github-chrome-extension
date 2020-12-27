@@ -1,0 +1,28 @@
+{
+   "name": "Enhancer for Github Chrome Extension",
+   "manifest_version": 2,
+   "short_name": "Enhancer for Github Chrome Extension",
+   "version": "0.10",
+   "browser_action": {
+      "default_icon": {
+         "16": "icons/icon16.png"
+      },
+      "default_title": "Enhancer for Github Chrome Extension"
+   },
+   "content_scripts":  [
+      {
+         "matches": [
+            "https://github.com/search*"
+         ],
+         "js": [
+            "handle-page-search-code.js"
+         ],
+         "run_at": "document_end"
+      }
+   ],
+   "icons": {
+      "128": "icons/icon128.png",
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png"
+   }
+}
