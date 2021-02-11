@@ -71,6 +71,8 @@ function pageSearchCodeHandler(searchParams, limitPages=5) {
     const uniqueResultsObjsBySnippetText = getUniqueObjsByField(uniqueResultsObjsByHrefsProjects, "snippetText");
     const uniqueResultsElems = uniqueResultsObjsBySnippetText.map(resultObj => resultObj.$domRef);
 
+    stylizedResults(uniqueResultsElems);
+
     renderResults(uniqueResultsElems);
 
     function createResultObject(result) {
@@ -96,6 +98,11 @@ function pageSearchCodeHandler(searchParams, limitPages=5) {
       }
     }
 
+    function stylizedResults(results) {
+        results.forEach(result => {
+            result.style.borderBottom = '1px solid #00ff4cf0'
+        })
+    }
 
     function getUniqueObjsByField(Objs, field) {
       const uniqueFields = [...new Set(Objs.map(Obj => Obj[field]))];
