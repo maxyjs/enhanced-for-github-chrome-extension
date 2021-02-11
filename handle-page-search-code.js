@@ -13,7 +13,7 @@ function detectionSearchPageType() {
 
 detectionSearchPageType();
 
-function pageSearchCodeHandler(searchParams, limitPages=20) {
+function pageSearchCodeHandler(searchParams, limitPages=5) {
   removeDefaultResultsContainer();
   const allResultsElems = [];
 
