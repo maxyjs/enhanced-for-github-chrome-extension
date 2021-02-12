@@ -77,7 +77,7 @@ function pageSearchCodeHandler(searchParams, limitPages=10) {
 
   function allResultsElemsHandler(allResultsElems) {
 
-    const allResultsObjs = allResultsElems.map(result => createResultObject(result));
+    const allResultsObjs = allResultsElems.map(createResultObject);
 
     const uniqueResultsObjsByHrefsProjects = getUniqueObjsByField(allResultsObjs, "projectHref");
     const uniqueResultsObjsBySnippetText = getUniqueObjsByField(uniqueResultsObjsByHrefsProjects, "snippetText");
