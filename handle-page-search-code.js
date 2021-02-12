@@ -37,11 +37,23 @@ function pageSearchCodeHandler(searchParams, limitPages=10) {
     }
 
     const requestUrl = `https://github.com/search?${searchParams.toString()}`;
+
+    let stopQueries = false;
+
     makeRequest(requestUrl, currNumberPage, limitPages);
 
     function makeRequest(requestUrl, currNumberPage, limitPages) {
+      
+      if (stopQueries) {
+        return;
+      }
+      
       fetch(requestUrl)
         .then(function(response) {
+          if (response.status !== 200) {
+            stopQueries = true;
+            return;
+          }
           return response.text();
         })
         .then(function(html) {
