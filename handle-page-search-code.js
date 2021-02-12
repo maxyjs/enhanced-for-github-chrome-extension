@@ -131,6 +131,17 @@ function pageSearchCodeHandler(searchParams, limitPages=10) {
       code_search_results.appendChild(newResultsContainer);
     }
 
+    function stylizedMatchWords() {
+      const matches = document.querySelectorAll('.hx_keyword-hl');
+      if (matches.length > 0) {
+        for (let i = 0; i < matches.length; i++){
+          matches[i].style.color = 'yellow'
+        }
+      }
+    }
+
+    stylizedMatchWords();
+
   }
 }
 
