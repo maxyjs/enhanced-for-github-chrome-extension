@@ -3,6 +3,11 @@
    "manifest_version": 2,
    "short_name": "Enhancer for Github Chrome Extension",
    "version": "0.10",
+   "background": {
+      "scripts": [
+         "hot-reload.js"
+      ]
+   },
    "browser_action": {
       "default_icon": {
          "16": "icons/icon16.png"

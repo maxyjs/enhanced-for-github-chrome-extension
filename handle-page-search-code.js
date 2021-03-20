@@ -13,7 +13,7 @@ function detectionSearchPageType() {
 
 detectionSearchPageType();
 
-function pageSearchCodeHandler(searchParams, limitPages=10) {
+function pageSearchCodeHandler(searchParams, limitPages=6) {
   removeDefaultResultsContainer();
   const allResultsElems = [];
 
@@ -112,7 +112,10 @@ function pageSearchCodeHandler(searchParams, limitPages=10) {
 
     function stylizedResults(results) {
         results.forEach(result => {
-            result.style.borderBottom = '1px solid #00ff4cf0'
+          const table = result.querySelector('table')
+          if (table) {
+          table.style.border = '1px solid cyan'
+          }
         })
     }
 
