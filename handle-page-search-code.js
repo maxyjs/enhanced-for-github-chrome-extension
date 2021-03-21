@@ -186,7 +186,3 @@ function calculateLimitPages() {
     : Math.floor(codeResults / assumingResultsOnPage)
   return limit
 }
-
-
-
-
