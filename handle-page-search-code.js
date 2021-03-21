@@ -13,26 +13,22 @@ function detectionSearchPageType() {
 
 detectionSearchPageType();
 
-function pageSearchCodeHandler(searchParams, limitPages=6) {
-  removeDefaultResultsContainer();
+function pageSearchCodeHandler(searchParams) {
+
+  const limitPages = calculateLimitPages()
+
   const allResultsElems = [];
 
   findResultsFromAllPages(searchParams, 0, limitPages, allResultsElemsHandler);
 
-  function removeDefaultResultsContainer() {
-    const defaultResultsContainer = document.querySelector('.code-list');
-    if( defaultResultsContainer ) defaultResultsContainer.remove();
-  }
-
   function findResultsFromAllPages(searchParams, currNumberPage, limitPages, allResultsElemsHandler) {
-    if(currNumberPage > limitPages) return;
+    if (currNumberPage > limitPages) return;
 
-    const newNumberPage = currNumberPage+1;
+    const newNumberPage = currNumberPage + 1;
 
-    if( !searchParams.has('p') ) {
+    if (!searchParams.has('p')) {
       searchParams.set('p', newNumberPage.toString());
-    }
-    else {
+    } else {
       searchParams.set('p', newNumberPage.toString());
     }
 
@@ -43,20 +39,20 @@ function pageSearchCodeHandler(searchParams, limitPages=6) {
     makeRequest(requestUrl, currNumberPage, limitPages);
 
     function makeRequest(requestUrl, currNumberPage, limitPages) {
-      
+
       if (stopQueries) {
         return;
       }
-      
+
       fetch(requestUrl)
-        .then(function(response) {
+        .then(function (response) {
           if (response.status !== 200) {
             stopQueries = true;
-            return;
+            throw new Error("Error response");
           }
           return response.text();
         })
-        .then(function(html) {
+        .then(function (html) {
           const parser = new DOMParser();
           const responseDocument = parser.parseFromString(html, "text/html");
           return responseDocument;
@@ -64,9 +60,9 @@ function pageSearchCodeHandler(searchParams, limitPages=6) {
         .then(doc => {
           const resultElems = [...doc.getElementsByClassName('code-list-item')];
           resultElems.forEach(resultElem => allResultsElems.push(resultElem));
-          if( currNumberPage >= limitPages) allResultsElemsHandler(allResultsElems);
+          if (currNumberPage >= limitPages) allResultsElemsHandler(allResultsElems);
         })
-        .catch(function(err) {
+        .catch(function (err) {
           console.error('Failed to fetch page: ', err);
         });
     }
@@ -76,6 +72,11 @@ function pageSearchCodeHandler(searchParams, limitPages=6) {
   }
 
   function allResultsElemsHandler(allResultsElems) {
+
+    if (allResultsElems.length === 0) {
+      console.log('not results')
+      return
+    }
 
     const allResultsObjs = allResultsElems.map(createResultObject);
 
@@ -97,13 +98,12 @@ function pageSearchCodeHandler(searchParams, limitPages=6) {
         snippetText
       };
 
-
-      function getProjectHref(resultElem){
+      function getProjectHref(resultElem) {
         const projectHref = resultElem.querySelector('.flex-shrink-0').src;
         return projectHref;
       }
 
-      function getSnippetText(resultElem){
+      function getSnippetText(resultElem) {
         const $tbody = resultElem.querySelector('tbody');
         const snippetText = $tbody.innerText;
         return snippetText;
@@ -111,12 +111,12 @@ function pageSearchCodeHandler(searchParams, limitPages=6) {
     }
 
     function stylizedResults(results) {
-        results.forEach(result => {
-          const table = result.querySelector('table')
-          if (table) {
+      results.forEach(result => {
+        const table = result.querySelector('table')
+        if (table) {
           table.style.border = '1px solid cyan'
-          }
-        })
+        }
+      })
     }
 
     function getUniqueObjsByField(Objs, field) {
@@ -125,7 +125,7 @@ function pageSearchCodeHandler(searchParams, limitPages=6) {
 
       Objs.forEach(Obj => {
         const index = uniqueFields.indexOf(Obj[field]);
-        if( index > 0 ) {
+        if (index > 0) {
           uniqueObjs.push(Obj);
           uniqueFields.splice(index, 1);
         }
@@ -135,6 +135,9 @@ function pageSearchCodeHandler(searchParams, limitPages=6) {
     }
 
     function renderResults(resultsElems) {
+
+      removeDefaultResultsContainer();
+
       const newResultsContainer = document.createElement('DIV');
       newResultsContainer.className = 'code-list';
 
@@ -149,7 +152,7 @@ function pageSearchCodeHandler(searchParams, limitPages=6) {
     function stylizedMatchWords() {
       const matches = document.querySelectorAll('.hx_keyword-hl');
       if (matches.length > 0) {
-        for (let i = 0; i < matches.length; i++){
+        for (let i = 0; i < matches.length; i++) {
           matches[i].style.color = 'yellow'
         }
       }
@@ -158,6 +161,30 @@ function pageSearchCodeHandler(searchParams, limitPages=6) {
     stylizedMatchWords();
 
   }
+
+  function removeDefaultResultsContainer() {
+    const defaultResultsContainer = document.querySelector('.code-list');
+    if (defaultResultsContainer) defaultResultsContainer.remove();
+  }
+}
+
+function calculateLimitPages() {
+
+  const makeMaxHandleResults = 40
+  const maxHandlePages = 6
+  const assumingResultsOnPage = 7
+
+  const h3 = document.querySelectorAll('h3')[1] || null
+
+  if (!h3) {
+    console.log("Not found h3")
+    return 0
+  }
+
+  const codeResults = +(h3.innerText.replace(/\D/g, ''))
+  const limit = codeResults > makeMaxHandleResults ? maxHandlePages
+    : Math.floor(codeResults / assumingResultsOnPage)
+  return limit
 }
 
 
